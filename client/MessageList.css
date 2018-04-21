@@ -1,0 +1,55 @@
+.MessageList {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 75vw;
+    padding: 20px;
+	background: linear-gradient(to bottom right, orange, yellow);
+	overflow-y: scroll;
+	overflow-x: hidden;
+}
+
+.MessageMe {
+	background: #3399FF;
+	margin: 10px 0;
+	width: 40%;
+	border-radius: 15px;
+	padding: 15px 15px 30px 30px;
+	position: relative;
+}	
+
+.MessageMe::before {
+	content:"";
+	position: absolute;
+	bottom: 0px;
+	left: 4px;
+	width: 35px;
+	height: 35px;
+	border-left: 30px solid #3399FF;
+	transform: rotate(-23deg);
+    
+}
+
+.MessageElse {
+	background: #99CC66;
+	margin: 10px 0;
+	width: 40%;
+	border-radius: 15px;
+	padding: 15px 30px 30px 15px;
+	margin-left: 60%;
+	position: relative;
+}
+
+.MessageElse::after {
+	content:"";
+	position: absolute;
+	bottom: -14px;
+	right: -27px;
+	width: 35px;
+	height: 35px;
+	border-left: 30px solid #99CC66;
+	transform: rotate(23deg);
+    
+}	
+
