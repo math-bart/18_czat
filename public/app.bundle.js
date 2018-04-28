@@ -14532,14 +14532,7 @@ var App = function (_Component) {
   }, {
     key: 'chatUpdate',
     value: function chatUpdate(users) {
-      var _this3 = this;
-
       this.setState({ users: users });
-      this.setState({ change: 1 }, function () {
-        return setTimeout(function () {
-          this.setState({ change: 0 });
-        }.bind(_this3), 3000);
-      });
     }
   }, {
     key: 'handleMessageSubmit',
@@ -14553,10 +14546,6 @@ var App = function (_Component) {
     value: function handleUserSubmit(name) {
       this.setState({ name: name });
       socket.emit('join', name);
-      this.handleMessageSubmit({
-        text: 'Welcome everyone',
-        from: name
-      });
     }
   }, {
     key: 'render',
@@ -14566,7 +14555,7 @@ var App = function (_Component) {
   }, {
     key: 'renderLayout',
     value: function renderLayout() {
-      var _this4 = this;
+      var _this3 = this;
 
       return _react2.default.createElement(
         'div',
@@ -14577,7 +14566,7 @@ var App = function (_Component) {
           _react2.default.createElement(
             'div',
             { className: _App2.default.AppTitle },
-            'You\'r sign as: ',
+            'You\'re sign as: ',
             _react2.default.createElement(
               'strong',
               null,
@@ -14605,7 +14594,7 @@ var App = function (_Component) {
             }),
             _react2.default.createElement(_MessageForm2.default, {
               onMessageSubmit: function onMessageSubmit(message) {
-                return _this4.handleMessageSubmit(message);
+                return _this3.handleMessageSubmit(message);
               },
               name: this.state.name
             })
@@ -14616,10 +14605,10 @@ var App = function (_Component) {
   }, {
     key: 'renderUserForm',
     value: function renderUserForm() {
-      var _this5 = this;
+      var _this4 = this;
 
       return _react2.default.createElement(_UserForm2.default, { onUserSubmit: function onUserSubmit(name) {
-          return _this5.handleUserSubmit(name);
+          _this4.handleUserSubmit(name);
         } });
     }
   }]);
@@ -18510,7 +18499,8 @@ var MessageForm = function (_Component) {
             return _this2.changeHandler(e);
           },
           value: this.state.text,
-          placeholder: 'Message'
+          placeholder: 'Message',
+          autoFocus: true
         })
       );
     }
@@ -18599,6 +18589,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _react = __webpack_require__(2);
 
 var _react2 = _interopRequireDefault(_react);
@@ -18608,6 +18600,12 @@ var _MessageList = __webpack_require__(94);
 var _MessageList2 = _interopRequireDefault(_MessageList);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var Message = function Message(props) {
   if (props.from === props.me) {
@@ -18619,6 +18617,21 @@ var Message = function Message(props) {
         null,
         props.from,
         ' :'
+      ),
+      _react2.default.createElement(
+        'span',
+        null,
+        props.text
+      )
+    );
+  } else if (props.from === 'server') {
+    return _react2.default.createElement(
+      'div',
+      null,
+      _react2.default.createElement(
+        'strong',
+        null,
+        'server :'
       ),
       _react2.default.createElement(
         'span',
@@ -18644,20 +18657,51 @@ var Message = function Message(props) {
     );
   }
 };
-var MessageList = function MessageList(props) {
-  return _react2.default.createElement(
-    'div',
-    { className: _MessageList2.default.MessageList },
-    props.messages.map(function (message, i) {
-      return _react2.default.createElement(Message, {
-        key: i,
-        from: message.from,
-        text: message.text,
-        me: props.me
-      });
-    })
-  );
-};
+
+var MessageList = function (_React$Component) {
+  _inherits(MessageList, _React$Component);
+
+  function MessageList() {
+    _classCallCheck(this, MessageList);
+
+    return _possibleConstructorReturn(this, (MessageList.__proto__ || Object.getPrototypeOf(MessageList)).call(this));
+  }
+
+  _createClass(MessageList, [{
+    key: 'componentDidUpdate',
+    value: function componentDidUpdate() {
+      var element = this.el;
+      if (element.clientHeight < element.scrollHeight) {
+        element.scrollTop = element.scrollHeight;
+      }
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this2 = this;
+
+      return _react2.default.createElement(
+        'div',
+        {
+          className: _MessageList2.default.MessageList,
+          ref: function ref(_ref) {
+            return _this2.el = _ref;
+          }
+        },
+        this.props.messages.map(function (message, i) {
+          return _react2.default.createElement(Message, {
+            key: i,
+            from: message.from,
+            text: message.text,
+            me: _this2.props.me
+          });
+        })
+      );
+    }
+  }]);
+
+  return MessageList;
+}(_react2.default.Component);
 
 exports.default = MessageList;
 
@@ -18720,7 +18764,7 @@ exports = module.exports = __webpack_require__(8)(false);
 
 
 // module
-exports.push([module.i, "._2UvbzmgCLZxth5pRT2XhDs {\n    flex: 1;\n    display: flex;\n    flex-direction: column;\n    justify-content: flex-start;\n    width: 75vw;\n    padding: 20px;\n\tbackground: linear-gradient(to bottom right, orange, yellow);\n\toverflow-y: scroll;\n\toverflow-x: hidden;\n}\n\n._2qANlUw_G5CqvhmWUIn7PB {\n\tbackground: #3399FF;\n\tmargin: 10px 0;\n\twidth: 40%;\n\tborder-radius: 15px;\n\tpadding: 15px 15px 30px 30px;\n\tposition: relative;\n}\t\n\n._2qANlUw_G5CqvhmWUIn7PB::before {\n\tcontent:\"\";\n\tposition: absolute;\n\tbottom: 0px;\n\tleft: 4px;\n\twidth: 35px;\n\theight: 35px;\n\tborder-left: 30px solid #3399FF;\n\ttransform: rotate(-23deg);\n    \n}\n\n._3XV1dl2gKLE-MutXluuj7h {\n\tbackground: #99CC66;\n\tmargin: 10px 0;\n\twidth: 40%;\n\tborder-radius: 15px;\n\tpadding: 15px 30px 30px 15px;\n\tmargin-left: 60%;\n\tposition: relative;\n}\n\n._3XV1dl2gKLE-MutXluuj7h::after {\n\tcontent:\"\";\n\tposition: absolute;\n\tbottom: -14px;\n\tright: -27px;\n\twidth: 35px;\n\theight: 35px;\n\tborder-left: 30px solid #99CC66;\n\ttransform: rotate(23deg);\n    \n}\t\n\n", ""]);
+exports.push([module.i, "._2UvbzmgCLZxth5pRT2XhDs {\n    flex: 1;\n    display: flex;\n    flex-direction: column;\n    justify-content: flex-start;\n    width: 75vw;\n    padding: 20px;\n\tbackground: linear-gradient(to bottom right, orange, yellow);\n\toverflow-y: scroll;\n\toverflow-x: hidden;\n\ttext-align: center;\n\theight: calc(100vh - 115px);\n}\n\n._2qANlUw_G5CqvhmWUIn7PB {\n\tbackground: #3399FF;\n\tmargin: 10px 0;\n\twidth: 40%;\n\tborder-radius: 15px;\n\tpadding: 15px 15px 30px 30px;\n\tposition: relative;\n\ttext-align: left;\n}\t\n\n._2qANlUw_G5CqvhmWUIn7PB::before {\n\tcontent:\"\";\n\tposition: absolute;\n\tbottom: 0px;\n\tleft: 4px;\n\twidth: 35px;\n\theight: 35px;\n\tborder-left: 30px solid #3399FF;\n\ttransform: rotate(-23deg);\n    \n}\n\n._3XV1dl2gKLE-MutXluuj7h {\n\tbackground: #99CC66;\n\tmargin: 10px 0;\n\twidth: 40%;\n\tborder-radius: 15px;\n\tpadding: 15px 30px 30px 15px;\n\tmargin-left: 60%;\n\tposition: relative;\n\ttext-align: left;\n}\n\n._3XV1dl2gKLE-MutXluuj7h::after {\n\tcontent:\"\";\n\tposition: absolute;\n\tbottom: -14px;\n\tright: -27px;\n\twidth: 35px;\n\theight: 35px;\n\tborder-left: 30px solid #99CC66;\n\ttransform: rotate(23deg);\n    \n}\t\n\n", ""]);
 
 // exports
 exports.locals = {
@@ -18913,7 +18957,8 @@ var UserForm = function (_Component) {
           onChange: function onChange(e) {
             return _this2.handleChange(e);
           },
-          value: this.state.name
+          value: this.state.name,
+          autoFocus: true
         })
       );
     }
