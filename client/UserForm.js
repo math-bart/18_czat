@@ -25,6 +25,7 @@ class UserForm extends Component {
           placeholder='Write your nickname and press enter'
           onChange={e => this.handleChange(e)}
           value={this.state.name}
+		  autoFocus
         />
       </form>
     );

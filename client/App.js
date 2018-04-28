@@ -19,31 +19,23 @@ class App extends Component {
     socket.on('message', message => this.messageReceive(message));
     socket.on('update', ({users}) => this.chatUpdate(users));
   }
+  
   messageReceive(message) {
     const messages = [...this.state.messages, message];
     this.setState({messages});
   }
   chatUpdate(users) {
     this.setState({users});
-	this.setState({change: 1}, () => setTimeout(function() { this.setState({change: 0}); }.bind(this), 3000));
   }
   handleMessageSubmit(message) {
     const messages = [...this.state.messages, message];
     this.setState({messages});
     socket.emit('message', message);
   }
-  
   handleUserSubmit(name) {
     this.setState({name});
     socket.emit('join', name);
-	this.handleMessageSubmit({
-      text: 'Welcome everyone',
-      from: name
-    });
   }
-
-  
-  
   render() {
     return this.state.name !== '' ? this.renderLayout() : this.renderUserForm();
   }
@@ -52,7 +44,7 @@ class App extends Component {
       <div className={styles.App}>
         <div className={styles.AppHeader}>
           <div className={styles.AppTitle}>
-            You'r sign as: <strong> {this.state.name}</strong>
+            You're sign as: <strong> {this.state.name}</strong>
           </div>
           <div className={styles.AppRoom}>
             Welcome on mr.Andrzej ChatApp
@@ -76,7 +68,7 @@ class App extends Component {
     );
   }
   renderUserForm() {
-   return (<UserForm onUserSubmit={name => this.handleUserSubmit(name)} />)
+   return (<UserForm onUserSubmit={name => {this.handleUserSubmit(name)}} />)
   }
 };
 

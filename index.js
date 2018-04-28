@@ -15,34 +15,40 @@ app.get('/', function(req, res){
 });
 
 io.on('connection', function(socket) {
-
   socket.on('join', function(name){
     userService.addUser({
       id: socket.id,
       name
     });
-    
     io.emit('update', {
       users: userService.getAllUsers()
     });	
+	socket.broadcast.emit('message', {
+      text: name + ' join chat',
+      from: 'server'
+	});
   });
   socket.on('disconnect', () => {
-    userService.removeUser(socket.id);
+    var {name} = userService.getUserById(socket.id);
+	socket.broadcast.emit('message', {
+      text: name + ' left chat',
+      from: 'server'
+	});
+	userService.removeUser(socket.id);
     socket.broadcast.emit('update', {
       users: userService.getAllUsers()
     });
+	
   });
   socket.on('message', function(message){
-    var {name} = userService.getUserById(socket.id) || 'server';
-    socket.broadcast.emit('message', {
-      text: message.text,
-      from: name
-    });
+	var {name} = userService.getUserById(socket.id);
+	  socket.broadcast.emit('message', {
+        text: message.text,
+        from: name
+	  });
+	 
   });
 });
-
-
-
 
 
 server.listen(3000, function(){

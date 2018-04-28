@@ -29,6 +29,7 @@ class MessageForm extends Component {
           onChange={e => this.changeHandler(e)}
           value={this.state.text}
           placeholder='Message'
+		  autoFocus
         />
       </form>
     );
